@@ -19,6 +19,7 @@
   "homepage": "https://github.com/hr-rfp2305-manticore/QandA#readme",
   "dependencies": {
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongoose": "^7.3.2"
   }
 }
