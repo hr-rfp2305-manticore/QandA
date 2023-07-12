@@ -43,6 +43,7 @@ const ProductSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', ProductSchema);
 
+/// Transform dummy data and insert into DB
 const transformData = (data) => {
   const transformedData = {
     product_id: data.product_id,
