@@ -3,7 +3,9 @@ const dummyProduct = require('../dummyProductQuestion');
 
 const mongoose = require('mongoose');
 
-mongoose.connect(`mongodb://localhost:27017/${process.env.DB_NAME}`, {
+const DB_NAME = process.env.DB_NAME || 'qanda';
+
+mongoose.connect(`mongodb://localhost:27017/${DB_NAME}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
