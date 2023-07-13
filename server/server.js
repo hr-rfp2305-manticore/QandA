@@ -16,6 +16,9 @@ const startServer = async () => {
 
     //middleware
     app.use(morgan('dev'));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
     app.use('/qa', router);
 
     app.listen(PORT, () => {
