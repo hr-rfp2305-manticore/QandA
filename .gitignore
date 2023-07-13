@@ -1,2 +1,5 @@
 node_modules
 .env
+answers_photos.csv
+answers.csv
+questions.csv
