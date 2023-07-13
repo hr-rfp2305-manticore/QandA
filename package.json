@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,17 @@
   },
   "homepage": "https://github.com/hr-rfp2305-manticore/QandA#readme",
   "dependencies": {
+    "csv": "^6.3.1",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.3.2",
+    "progress": "^2.0.3"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1"
   }
 }
