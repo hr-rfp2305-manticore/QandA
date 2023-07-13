@@ -10,7 +10,7 @@ const createCompleteProduct = async () => {
   // Define collections
   const quesAnsPhotoCollection = db.collection('QuestionAnswerPhoto');
 
-  console.time('Aggregation Time'); // Start timer
+  console.time('Step 3/3 Complete'); // Start timer
 
   const cursor = quesAnsPhotoCollection.aggregate([
     {
@@ -24,9 +24,9 @@ const createCompleteProduct = async () => {
     },
   ]);
   await cursor.toArray();
-  console.timeEnd('Aggregation Time'); // End timer and print the duration
+  console.timeEnd('Step 3/3 Complete'); // End timer and print the duration
 
   client.close();
 };
 
-createCompleteProduct();
+module.exports = createCompleteProduct;

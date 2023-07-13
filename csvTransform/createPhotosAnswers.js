@@ -15,7 +15,7 @@ const createPhotosAnswers = async () => {
   await answersCollection.createIndex({ id: 1 });
   await photosCollection.createIndex({ answer_id: 1 });
 
-  console.time('Aggregation Time'); // Start timer
+  console.time('Step 1/3 Complete'); // Start timer
 
   const cursor = answersCollection.aggregate([
     {
@@ -42,9 +42,9 @@ const createPhotosAnswers = async () => {
     },
   ]);
   await cursor.toArray();
-  console.timeEnd('Aggregation Time'); // End timer and print the duration
+  console.timeEnd('Step 1/3 Complete'); // End timer and print the duration
 
   client.close();
 };
 
-createPhotosAnswers();
+module.exports = createPhotosAnswers;
