@@ -22,6 +22,9 @@ const createProductDocuments = async () => {
       },
     },
     {
+      $unset: 'product_id',
+    },
+    {
       $out: 'Products',
     },
   ]);
