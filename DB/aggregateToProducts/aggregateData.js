@@ -6,9 +6,9 @@ const createCompleteProduct = require('./createCompleteProduct');
 
 const aggregateData = async () => {
   // console.time('Total Time');
-  // await createPhotosAnswers();
+  await createPhotosAnswers();
   await createQuestionAnswerPhoto();
-  await createCompleteProduct();
+  // await createCompleteProduct();
   // console.timeEnd('Total Time');
 };
 aggregateData().catch(console.error);

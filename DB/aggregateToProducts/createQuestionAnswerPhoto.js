@@ -56,15 +56,15 @@ const createQuestionAnswerPhoto = async () => {
         as: 'answers',
       },
     },
-    {
-      $unset: [
-        'body',
-        'id',
-        'asker_email',
-        'answers.question_id',
-        'answers.answerer_email',
-      ],
-    },
+    // {
+    //   $unset: [
+    //     'body',
+    //     'id',
+    //     'asker_email',
+    //     'answers.question_id',
+    //     'answers.answerer_email',
+    //   ],
+    // },
 
     {
       $merge: 'QuestionAnswerPhoto',

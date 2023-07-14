@@ -14,19 +14,47 @@ module.exports = {
           },
         },
         {
+          $unset: [
+            'answers.answerer_email',
+            'answers.reported',
+            'answers.question_id',
+          ],
+        },
+        {
           $addFields: {
             results: {
               $slice: ['$answers', count],
             },
             page: page,
             count: count,
+            question: '$question_id',
           },
         },
+
         {
           $project: {
             answers: 0,
           },
         },
+        {
+          $addFields: {
+            results: {
+              $map: {
+                input: '$results',
+                as: 'result',
+                in: {
+                  $mergeObjects: [
+                    '$$result',
+                    {
+                      answer_id: '$$result.id',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+
         {
           $unset: [
             '_id',
@@ -36,10 +64,14 @@ module.exports = {
             'question_body',
             'reported',
             'product_id',
+            'answers.question_id',
+            'asker_email',
+            'body',
+            'id',
+            'question_id',
+            'results._id',
+            'results.id',
           ],
-        },
-        {
-          $addFields: {},
         },
       ]);
       const data = await cursor.toArray();
