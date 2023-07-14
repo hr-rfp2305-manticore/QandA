@@ -17,12 +17,4 @@ module.exports = {
       console.error(err);
     }
   },
-  // getQuestions: async (product_id, page = 1, count = 5) => {
-  //   try {
-  //     const db = await connectDb();
-  //     const questionDatabase = db.collection('Question');
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // },
 };
