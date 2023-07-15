@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const controllers = require('./controllers');
 
-router.get('/questions', controllers.Questions.get);
-router.post('/questions/', controllers.Questions.post);
+router.get('/', controllers.Questions.get);
+router.post('/', controllers.Questions.post);
+router.put('/:question_id/helpful', controllers.Questions.putHelp);
+router.put('/:question_id/report', controllers.Questions.putReport);
 
-router.get('/questions/:question_id/answers', controllers.Answers.get);
-router.post('/questions/:question_id/answers', controllers.Answers.post);
+router.get('/:question_id/answers', controllers.Answers.get);
+router.post('/:question_id/answers', controllers.Answers.post);
 
 module.exports = router;

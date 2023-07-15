@@ -22,11 +22,6 @@ module.exports = {
 
   post: async (req, res) => {
     const { body, name, email, product_id } = req.body;
-
-    console.log(body);
-    console.log(name);
-    console.log(email);
-    console.log(product_id);
     try {
       const data = await Questions.postQuestion(
         Number.parseInt(product_id),
@@ -37,6 +32,23 @@ module.exports = {
       res.status(201).send(data);
     } catch (err) {
       console.error(err);
+      res.status(400).send(err);
+    }
+  },
+
+  putHelp: async (req, res) => {
+    const { question_id } = req.params;
+    try {
+      res.send(`YOu are puttin a help at ${question_id}!`);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+  putReport: async (req, res) => {
+    const { question_id } = req.params;
+    try {
+      res.send(`YOu are puttin a report at ${question_id}!`);
+    } catch (err) {
       res.status(400).send(err);
     }
   },

@@ -19,7 +19,7 @@ const startServer = async () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    app.use('/qa', router);
+    app.use('/qa/questions', router);
 
     app.listen(PORT, () => {
       console.log(`Connected to ${db.databaseName}, Listening on port ${PORT}`);
