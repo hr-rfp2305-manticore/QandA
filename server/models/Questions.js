@@ -63,4 +63,19 @@ module.exports = {
   //   console.log(buffer);
   //   return document;
   // },
+
+  putHelp: async (question_id) => {
+    try {
+      const db = await connectDb();
+      const questionsCollection = db.collection('QuestionAnswerPhoto');
+      const data = await questionsCollection.updateOne(
+        { question_id: Number.parseInt(question_id) },
+        { $inc: { question_helpfulness: 1 } }
+      );
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
 };

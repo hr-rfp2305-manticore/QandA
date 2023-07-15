@@ -39,7 +39,8 @@ module.exports = {
   putHelp: async (req, res) => {
     const { question_id } = req.params;
     try {
-      res.send(`YOu are puttin a help at ${question_id}!`);
+      const data = await Questions.putHelp(Number.parseInt(question_id));
+      res.status(204).send();
     } catch (err) {
       res.status(400).send(err);
     }
