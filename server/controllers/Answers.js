@@ -38,6 +38,24 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+
+  putHelp: async (req, res) => {
+    const { answer_id } = req.params;
+    try {
+      res.send(`YOu are puttin a help at ${answer_id} answers!`);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  putReport: async (req, res) => {
+    const { answer_id } = req.params;
+    try {
+      res.send(`YOu are puttin a report at ${answer_id} answers!`);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
 };
 
 const checkInput = (parameter, defaultAmount) => {
