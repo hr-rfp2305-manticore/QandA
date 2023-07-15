@@ -13,7 +13,7 @@ module.exports = {
 
       const data = await productCollection
         .find({ product_id: product_id }, { projection: { product_id: 0 } })
-        .limit(5)
+        .limit(count)
         .skip(skipTo)
         .toArray();
       // console.log(data);
