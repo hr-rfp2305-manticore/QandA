@@ -1,4 +1,5 @@
 const connectDb = require('../db');
+let = collectionLength = 0;
 
 module.exports = {
   getAnswers: async (question_id, page, count) => {
@@ -80,5 +81,41 @@ module.exports = {
     } catch (err) {
       console.error(err);
     }
+  },
+
+  insertAnswer: async (question_id, body, name, email, photos) => {
+    console.log(question_id);
+    const db = await connectDb();
+
+    docsCollection = db.collection('QuestionAnswerPhoto');
+
+    // MAKE SURE TO WRITE ABOUT THIS!!!!! NOW THE DOCUMENTS DONT HAVE TO BE COUNTED.
+    // STORE LENGTH GLOBALLY AND ADD TO THE COUNT. NOW THE USER DOES NOT HAVE TO WAIT FOR A RESPONSE
+    // MAYBE GET THESE LENGTHS IN THE DB FILE AT LOAD
+    if (collectionLength === 0) {
+      collectionLength = await docsCollection.countDocuments({});
+    } else {
+      collectionLength++;
+    }
+
+    const newAnswer = {
+      answerer_email: email,
+      answerer_name: name,
+      body: body,
+      date_written: Date.now(),
+      helpful: 0,
+      id: collectionLength + 1,
+      photos: photos,
+      question_id: question_id,
+      reported: 0,
+    };
+
+    // await docsCollection.findOne{question_id:}
+
+    docsCollection.updateOne(
+      { question_id: Number.parseInt(question_id) },
+      { $push: { answers: newAnswer } }
+    );
+    return newAnswer;
   },
 };

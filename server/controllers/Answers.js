@@ -10,7 +10,6 @@ module.exports = {
     if (!page) {
       page = 1;
     }
-    console.log(req.query);
     try {
       const data = await Answers.getAnswers(
         Number.parseInt(question_id),
@@ -25,13 +24,21 @@ module.exports = {
   },
 
   post: async (req, res) => {
-    const { body, name, email, photo } = req.body;
+    const { body, name, email, photos } = req.body;
     const { question_id } = req.params;
-    console.log(question_id);
-    console.log(body);
-    console.log(name);
-    console.log(email);
-    console.log(photo);
-    res.status(201).send('You are posting an answer!');
+
+    try {
+      const data = await Answers.insertAnswer(
+        question_id,
+        body,
+        name,
+        email,
+        photos
+      );
+      res.status(201).send(data);
+    } catch (err) {
+      console.error(err);
+      res.status(400).send(err);
+    }
   },
 };
