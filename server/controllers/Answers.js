@@ -23,4 +23,15 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+
+  post: async (req, res) => {
+    const { body, name, email, photo } = req.body;
+    const { question_id } = req.params;
+    console.log(question_id);
+    console.log(body);
+    console.log(name);
+    console.log(email);
+    console.log(photo);
+    res.status(201).send('You are posting an answer!');
+  },
 };

@@ -16,4 +16,13 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+
+  post: async (req, res) => {
+    const { body, name, email, product_id } = req.body;
+    console.log(body);
+    console.log(name);
+    console.log(email);
+    console.log(product_id);
+    res.status(201).send('You are posting this');
+  },
 };
