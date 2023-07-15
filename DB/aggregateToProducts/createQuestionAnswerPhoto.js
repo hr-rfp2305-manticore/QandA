@@ -33,7 +33,7 @@ const createQuestionAnswerPhoto = async () => {
         question_body: '$body',
         asker_name: '$asker_name',
         asker_email: 'asker_email',
-        question_helpfullness: '$helpful',
+        question_helpfulness: '$helpful',
         reported: {
           $cond: {
             if: {
