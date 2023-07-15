@@ -18,25 +18,22 @@ const createQuestionAnswerPhoto = async () => {
   console.time('Step 2/3 Complete');
 
   const cursor = questionsCollections.aggregate([
-    // {
-    //   $match: {
-    //     reported: 0,
-    //   },
-    // },
-    // {
-    //   $lookup: {
-    //     from: 'AnswerAndPhotos',
-    //     localField: 'id',
-    //     foreignField: 'question_id',
-    //     as: 'answers',
-    //   },
-    // },
-
     {
-      $addFields: {
+      $lookup: {
+        from: 'AnswerAndPhotos',
+        localField: 'id',
+        foreignField: 'question_id',
+        as: 'answers',
+      },
+    },
+    {
+      $project: {
+        product_id: '$product_id',
         question_id: '$id',
         question_body: '$body',
-        question_date: '$date',
+        asker_name: '$asker_name',
+        asker_email: 'asker_email',
+        question_helpfullness: '$helpful',
         reported: {
           $cond: {
             if: {
@@ -46,26 +43,9 @@ const createQuestionAnswerPhoto = async () => {
             else: true,
           },
         },
+        answers: '$answers',
       },
     },
-    {
-      $lookup: {
-        from: 'AnswerAndPhotos',
-        localField: 'question_id',
-        foreignField: 'question_id',
-        as: 'answers',
-      },
-    },
-    // {
-    //   $unset: [
-    //     'body',
-    //     'id',
-    //     'asker_email',
-    //     'answers.question_id',
-    //     'answers.answerer_email',
-    //   ],
-    // },
-
     {
       $merge: 'QuestionAnswerPhoto',
     },

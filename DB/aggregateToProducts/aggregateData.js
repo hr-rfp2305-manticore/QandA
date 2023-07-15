@@ -3,7 +3,7 @@ const createQuestionAnswerPhoto = require('./createQuestionAnswerPhoto');
 const createCompleteProduct = require('./createCompleteProduct');
 
 const aggregateData = async () => {
-  await createPhotosAnswers();
+  // await createPhotosAnswers();
   await createQuestionAnswerPhoto();
   // await createCompleteProduct();
 };
