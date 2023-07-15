@@ -3,8 +3,8 @@ let = collectionLength = 0;
 
 module.exports = {
   getAnswers: async (question_id, page, count) => {
+    console.log('MODEL', page, count);
     try {
-      console.log(question_id);
       const db = await connectDb();
       const answersCollection = db.collection('QuestionAnswerPhoto');
 
@@ -75,6 +75,44 @@ module.exports = {
           ],
         },
       ]);
+
+      // Cleaned up version
+      // const cursor = answersCollection.aggregate([
+      //   {
+      //     $match: {
+      //       question_id: question_id,
+      //     },
+      //   },
+      //   {
+      //     $project: {
+      //       answers: {
+      //         $slice: ['$answers', count],
+      //       },
+      //       question: '$question_id',
+      //     },
+      //   },
+      //   {
+      //     $project: {
+      //       results: {
+      //         $map: {
+      //           input: '$answers',
+      //           as: 'result',
+      //           in: {
+      //             answer_id: '$$result.id',
+      //             body: '$$result.body',
+      //             date: '$$result.date_written',
+      //             answerer_name: '$$result.answerer_name',
+      //             helpfulness: '$$result.helpful',
+      //             photos: '$$result.photos',
+      //           },
+      //         },
+      //       },
+      //       question: '$question',
+      //       count: count,
+      //       page: page,
+      //     },
+      //   },
+      // ]);
       const data = await cursor.toArray();
 
       return data;
@@ -104,7 +142,7 @@ module.exports = {
       body: body,
       date_written: Date.now(),
       helpful: 0,
-      id: collectionLength + 1,
+      id: collectionLength,
       photos: photos,
       question_id: question_id,
       reported: 0,

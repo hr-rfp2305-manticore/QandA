@@ -3,18 +3,15 @@ const { Answers } = require('../models');
 module.exports = {
   get: async (req, res) => {
     const { question_id } = req.params;
-    let { page, count } = req.query;
-    if (!count) {
-      count = 5;
-    }
-    if (!page) {
-      page = 1;
-    }
+    let { page, count } = req.body;
+    count = checkInput(count, 5);
+    page = checkInput(page, 1);
+
     try {
       const data = await Answers.getAnswers(
         Number.parseInt(question_id),
-        Number.parseInt(page),
-        Number.parseInt(count)
+        page,
+        count
       );
       res.send(data);
     } catch (err) {
@@ -41,4 +38,12 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+};
+
+const checkInput = (parameter, defaultAmount) => {
+  if (!parameter) {
+    return defaultAmount;
+  } else {
+    return Number.parseInt(parameter);
+  }
 };
