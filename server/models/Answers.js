@@ -1,4 +1,4 @@
-const connectDb = require('../db');
+const { connectDb } = require('../db');
 let = collectionLength = 0;
 
 module.exports = {

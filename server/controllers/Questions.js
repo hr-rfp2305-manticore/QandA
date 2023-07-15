@@ -48,7 +48,8 @@ module.exports = {
   putReport: async (req, res) => {
     const { question_id } = req.params;
     try {
-      res.send(`YOu are puttin a report at ${question_id}!`);
+      await Questions.putReport(Number.parseInt(question_id));
+      res.status(204).send();
     } catch (err) {
       res.status(400).send(err);
     }
