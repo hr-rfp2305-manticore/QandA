@@ -43,10 +43,17 @@ module.exports = {
 */
 
   getQuestions: async (product_id, page, count) => {
+    const skipTo = (page - 1) * count;
     try {
       const cursor = questionsCollection.aggregate([
         {
           $match: { product_id: product_id, reported: 0 },
+        },
+        {
+          $skip: skipTo,
+        },
+        {
+          $limit: count,
         },
         {
           $lookup: {
@@ -56,6 +63,7 @@ module.exports = {
             as: 'answers',
           },
         },
+
         {
           $project: {
             // product_id: '$product_id',
