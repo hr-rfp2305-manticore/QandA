@@ -4,8 +4,8 @@ const createCompleteProduct = require('./createCompleteProduct');
 
 const aggregateData = async () => {
   // await createPhotosAnswers();
-  await createQuestionAnswerPhoto();
-  // await createCompleteProduct();
+  // await createQuestionAnswerPhoto();
+  await createCompleteProduct();
 };
 aggregateData().catch(console.error);
 

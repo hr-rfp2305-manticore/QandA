@@ -8,23 +8,65 @@ const createCompleteProduct = async () => {
   const db = client.db('qanda');
 
   // Define collections
-  const quesAnsPhotoCollection = db.collection('QuestionAnswerPhoto');
+  const questionsCollections = db.collection('Questions');
+  const answerAndPhotosCollections = db.collection('AnswerAndPhotos');
 
-  console.time('Step 3/3 Complete'); // Start timer
+  // Create indexes on the fields used in the $lookup stage
+  await questionsCollections.createIndex({ id: 1 });
+  await answerAndPhotosCollections.createIndex({ question_id: 1 });
 
-  const cursor = quesAnsPhotoCollection.aggregate([
+  console.time('Step 2/3 Complete');
+
+  const cursor = questionsCollections.aggregate([
+    {
+      $lookup: {
+        from: 'AnswerAndPhotos',
+        localField: 'id',
+        foreignField: 'question_id',
+        as: 'answers',
+      },
+    },
+    {
+      $project: {
+        product_id: '$product_id',
+        question_id: '$id',
+        question_body: '$body',
+        asker_name: '$asker_name',
+        asker_email: 'asker_email',
+        question_helpfullness: '$helpful',
+        reported: {
+          $cond: {
+            if: {
+              reported: ['$qty', 0],
+            },
+            then: false,
+            else: true,
+          },
+        },
+        answers: '$answers',
+      },
+    },
     {
       $group: {
         _id: '$product_id',
-        results: { $push: '$$ROOT' },
+        results: {
+          $push: '$$ROOT',
+        },
       },
     },
+    {
+      $project: {
+        product_id: '$_id',
+        results: '$results',
+      },
+    },
+
     {
       $merge: 'Products',
     },
   ]);
   await cursor.toArray();
-  console.timeEnd('Step 3/3 Complete'); // End timer and print the duration
+  console.timeEnd('Step 2/3 Complete'); // End timer and print the duration
 
   client.close();
 };
