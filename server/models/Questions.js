@@ -2,15 +2,15 @@ const { connectDb } = require('../db');
 const buffer = [];
 let questionsLen = 0;
 let db;
-let productsCollection;
+let questionsCollection;
 
 const createConnection = async () => {
   if (db) {
     return;
   }
   db = await connectDb();
-  productsCollection = db.collection('Products');
-  questionsLen = await productsCollection.countDocuments({});
+  questionsCollection = db.collection('Questions');
+  questionsLen = await questionsCollection.countDocuments({});
 };
 
 createConnection();
@@ -44,10 +44,9 @@ module.exports = {
 
   getQuestions: async (product_id, page, count) => {
     try {
-      const questionsCollection = db.collection('Questions');
       const cursor = questionsCollection.aggregate([
         {
-          $match: { product_id: product_id },
+          $match: { product_id: product_id, reported: 0 },
         },
         {
           $lookup: {
@@ -103,27 +102,20 @@ module.exports = {
 
   postQuestion: async (product_id, body, name, email) => {
     try {
-      // const db = await connectDb();
-      // const questionsCollection = db.collection('QuestionAnswerPhoto');
-      // if (questionsLen === 0) {
-      //   questionsLen = await questionsCollection.countDocuments({});
-      // }
-
       questionsLen++;
 
       const document = {
-        answers: [],
+        id: questionsLen,
+        product_id: product_id,
+        body: body,
         asker_email: email,
         asker_name: name,
-        product_id: product_id,
-        question_body: body,
-        question_helpfullness: 0,
-        question_id: questionsLen,
-        reported: false,
+        reported: 0,
+        helpful: 0,
       };
 
       const result = await questionsCollection.insertOne(document);
-      return result;
+      return { ...result, question_id: questionsLen };
     } catch (err) {
       console.error(err);
       throw err;

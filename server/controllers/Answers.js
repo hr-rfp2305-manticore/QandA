@@ -13,7 +13,11 @@ module.exports = {
         page,
         count
       );
-      res.send(data);
+      if (data.length === 0) {
+        res.status(404).send(`No question with an id ${question_id} exists`);
+      } else {
+        res.send(data[0]);
+      }
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
