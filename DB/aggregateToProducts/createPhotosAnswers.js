@@ -19,11 +19,6 @@ const createPhotosAnswers = async () => {
 
   const cursor = answersCollection.aggregate([
     {
-      $match: {
-        reported: 0,
-      },
-    },
-    {
       $lookup: {
         from: 'Photos',
         localField: 'id',
