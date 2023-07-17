@@ -13,7 +13,11 @@ module.exports = {
         page,
         count
       );
-      res.send(data);
+      if (!data) {
+        res.status(404).send(`There is no product with an id of ${product_id}`);
+      } else {
+        res.send(data);
+      }
     } catch (err) {
       console.error(err);
       res.status(400).send(err);
