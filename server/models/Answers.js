@@ -4,10 +4,10 @@ let = collectionLength = 0;
 module.exports = {
   getAnswers: async (question_id, page, count) => {
     console.log('MODEL', page, count);
+    const skipTo = (page - 1) * count;
     try {
       const db = await connectDb();
-      const answersCollection = db.collection('QuestionAnswerPhoto');
-
+      const answersCollection = db.collection('AnswerAndPhotos');
       const cursor = answersCollection.aggregate([
         {
           $match: {
@@ -15,66 +15,110 @@ module.exports = {
           },
         },
         {
-          $unset: [
-            'answers.answerer_email',
-            'answers.reported',
-            'answers.question_id',
-          ],
+          $skip: skipTo,
         },
         {
-          $addFields: {
-            results: {
-              $slice: ['$answers', count],
-            },
-            page: page,
-            count: count,
-            question: '$question_id',
-          },
+          $limit: count,
         },
-
         {
           $project: {
-            answers: 0,
+            question: question_id,
+            answer_id: '$id',
+            body: '$body',
+            data: '$date_written',
+            answerer_name: '$answerer_name',
+            helpfulness: '$helpful',
+            photos: '$photos',
+          },
+        },
+        {
+          $group: {
+            _id: question_id,
+            results: {
+              $push: '$$ROOT',
+            },
           },
         },
         {
           $addFields: {
-            results: {
-              $map: {
-                input: '$results',
-                as: 'result',
-                in: {
-                  $mergeObjects: [
-                    '$$result',
-                    {
-                      answer_id: '$$result.id',
-                    },
-                  ],
-                },
-              },
-            },
+            page: 1,
+            count: count,
+            question: question_id,
           },
         },
-
-        {
-          $unset: [
-            '_id',
-            'date_written',
-            'helpful',
-            'asker_name',
-            'question_body',
-            'reported',
-            'product_id',
-            'answers.question_id',
-            'asker_email',
-            'body',
-            'id',
-            'question_id',
-            'results._id',
-            'results.id',
-          ],
-        },
       ]);
+      const data = await cursor.toArray();
+      console.log(data[0]);
+      return data;
+
+      // Slowest
+      // const cursor = answersCollection.aggregate([
+      //   {
+      //     $match: {
+      //       question_id: question_id,
+      //     },
+      //   },
+      //   {
+      //     $unset: [
+      //       'answers.answerer_email',
+      //       'answers.reported',
+      //       'answers.question_id',
+      //     ],
+      //   },
+      //   {
+      //     $addFields: {
+      //       results: {
+      //         $slice: ['$answers', count],
+      //       },
+      //       page: page,
+      //       count: count,
+      //       question: '$question_id',
+      //     },
+      //   },
+
+      //   {
+      //     $project: {
+      //       answers: 0,
+      //     },
+      //   },
+      //   {
+      //     $addFields: {
+      //       results: {
+      //         $map: {
+      //           input: '$results',
+      //           as: 'result',
+      //           in: {
+      //             $mergeObjects: [
+      //               '$$result',
+      //               {
+      //                 answer_id: '$$result.id',
+      //               },
+      //             ],
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+
+      //   {
+      //     $unset: [
+      //       '_id',
+      //       'date_written',
+      //       'helpful',
+      //       'asker_name',
+      //       'question_body',
+      //       'reported',
+      //       'product_id',
+      //       'answers.question_id',
+      //       'asker_email',
+      //       'body',
+      //       'id',
+      //       'question_id',
+      //       'results._id',
+      //       'results.id',
+      //     ],
+      //   },
+      // ]);
 
       // Cleaned up version
       // const cursor = answersCollection.aggregate([
@@ -113,9 +157,9 @@ module.exports = {
       //     },
       //   },
       // ]);
-      const data = await cursor.toArray();
+      // const data = await cursor.toArray();
 
-      return data;
+      // return data;
     } catch (err) {
       console.error(err);
     }
