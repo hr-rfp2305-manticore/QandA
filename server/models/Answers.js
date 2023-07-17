@@ -204,4 +204,32 @@ module.exports = {
     }
     return { ...result, id: answersLen };
   },
+
+  putHelp: async (answer_id) => {
+    try {
+      const data = await answersCollection.updateOne(
+        { id: answer_id },
+        { $inc: { helpful: 1 } }
+      );
+      console.log(data);
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+
+  putReport: async (answer_id) => {
+    try {
+      const data = await answersCollection.updateOne(
+        { id: answer_id },
+        { $inc: { reported: 1 } }
+      );
+      console.log(data);
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
 };

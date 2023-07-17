@@ -46,7 +46,8 @@ module.exports = {
   putHelp: async (req, res) => {
     const { answer_id } = req.params;
     try {
-      res.send(`YOu are puttin a help at ${answer_id} answers!`);
+      const data = await Answers.putHelp(Number.parseInt(answer_id));
+      res.status(204).send();
     } catch (err) {
       res.status(400).send(err);
     }
@@ -55,7 +56,8 @@ module.exports = {
   putReport: async (req, res) => {
     const { answer_id } = req.params;
     try {
-      res.send(`YOu are puttin a report at ${answer_id} answers!`);
+      const data = await Answers.putReport(Number.parseInt(answer_id));
+      res.status(204).send();
     } catch (err) {
       res.status(400).send(err);
     }
