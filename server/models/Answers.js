@@ -1,13 +1,25 @@
 const { connectDb } = require('../db');
-let = collectionLength = 0;
+let db;
+let answersCollection;
+let answersLen = 0;
+
+const createConnection = async () => {
+  if (db) {
+    return;
+  }
+  db = await connectDb();
+  answersCollection = db.collection('AnswerAndPhotos');
+  answersLen = await answersCollection.countDocuments({});
+  console.log(answersLen);
+};
+
+createConnection();
 
 module.exports = {
   getAnswers: async (question_id, page, count) => {
     console.log('MODEL', page, count);
     const skipTo = (page - 1) * count;
     try {
-      const db = await connectDb();
-      const answersCollection = db.collection('AnswerAndPhotos');
       const cursor = answersCollection.aggregate([
         {
           $match: {
@@ -25,7 +37,7 @@ module.exports = {
             question: question_id,
             answer_id: '$id',
             body: '$body',
-            data: '$date_written',
+            date: '$date_written',
             answerer_name: '$answerer_name',
             helpfulness: '$helpful',
             photos: '$photos',
@@ -166,38 +178,30 @@ module.exports = {
   },
 
   insertAnswer: async (question_id, body, name, email, photos) => {
-    console.log(question_id);
-    const db = await connectDb();
-
-    docsCollection = db.collection('QuestionAnswerPhoto');
+    console.log('questionid: ', question_id);
 
     // MAKE SURE TO WRITE ABOUT THIS!!!!! NOW THE DOCUMENTS DONT HAVE TO BE COUNTED.
     // STORE LENGTH GLOBALLY AND ADD TO THE COUNT. NOW THE USER DOES NOT HAVE TO WAIT FOR A RESPONSE
     // MAYBE GET THESE LENGTHS IN THE DB FILE AT LOAD
-    if (collectionLength === 0) {
-      collectionLength = await docsCollection.countDocuments({});
-    } else {
-      collectionLength++;
-    }
 
-    const newAnswer = {
+    const document = {
       answerer_email: email,
       answerer_name: name,
       body: body,
       date_written: Date.now(),
       helpful: 0,
-      id: collectionLength,
+      id: answersLen + 1,
       photos: photos,
-      question_id: question_id,
+      question_id: Number.parseInt(question_id),
       reported: 0,
     };
 
     // await docsCollection.findOne{question_id:}
+    const result = await answersCollection.insertOne(document);
 
-    docsCollection.updateOne(
-      { question_id: Number.parseInt(question_id) },
-      { $push: { answers: newAnswer } }
-    );
-    return newAnswer;
+    if (result.acknowledged) {
+      answersLen++;
+    }
+    return { ...result, id: answersLen };
   },
 };

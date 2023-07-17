@@ -1,8 +1,8 @@
 const { connectDb } = require('../db');
 const buffer = [];
-let questionsLen = 0;
 let db;
 let questionsCollection;
+let questionsLen = 0;
 
 const createConnection = async () => {
   if (db) {
@@ -71,7 +71,7 @@ module.exports = {
             question_body: '$body',
             asker_name: '$asker_name',
             asker_email: 'asker_email',
-            question_helpfullness: '$helpful',
+            question_helpfulness: '$helpful',
             reported: {
               $cond: {
                 if: {
@@ -94,7 +94,7 @@ module.exports = {
         },
         {
           $project: {
-            product_id: product_id,
+            product_id: '$_id',
             results: '$results',
           },
         },
@@ -110,10 +110,8 @@ module.exports = {
 
   postQuestion: async (product_id, body, name, email) => {
     try {
-      questionsLen++;
-
       const document = {
-        id: questionsLen,
+        id: questionsLen + 1,
         product_id: product_id,
         body: body,
         asker_email: email,
@@ -123,6 +121,11 @@ module.exports = {
       };
 
       const result = await questionsCollection.insertOne(document);
+
+      if (result.acknowledged) {
+        questionsLen++;
+      }
+
       return { ...result, question_id: questionsLen };
     } catch (err) {
       console.error(err);
