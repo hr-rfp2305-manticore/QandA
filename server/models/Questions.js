@@ -170,11 +170,12 @@ module.exports = {
         {
           question_id: question_id,
         },
-        { $set: { reported: true } }
+        { $inc: { reported: 1 } }
       );
       return data;
     } catch (err) {
       console.error(err);
+      throw err;
     }
   },
 };
