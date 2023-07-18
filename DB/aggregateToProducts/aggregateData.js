@@ -38,7 +38,7 @@ const aggregateData = async () => {
     await createPhotosAnswers();
     console.log('Successfully created Collection!');
   } catch (err) {
-    console.err(err);
+    console.error(err);
   }
 };
 
