@@ -15,33 +15,6 @@ const createConnection = async () => {
 
 createConnection();
 module.exports = {
-  /*
-  // #TODO#
-  // Update the limit and skip to within results
-  getQuestions: async (product_id, page, count) => {
-    const skipTo = (page - 1) * count;
-    try {
-      // const db = await connectDb();
-      // const productCollection = db.collection('QuestionAnswerPhoto');
-      console.log(productsCollection);
-      // Uncomment this line to increase query speed
-      // productsCollection.createIndex({ product_id: 1 });
-
-      const data = await productsCollection
-        // .find({ product_id: product_id, reported: { $eq: false } })
-        .find({ product_id: product_id })
-        // .limit(count)
-        // .skip(skipTo)
-        .toArray();
-      console.log(data[0]);
-      return data[0];
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  },
-*/
-
   getQuestions: async (product_id, page, count) => {
     const skipTo = (page - 1) * count;
     try {
@@ -66,7 +39,6 @@ module.exports = {
 
         {
           $project: {
-            // product_id: '$product_id',
             question_id: '$id',
             question_body: '$body',
             asker_name: '$asker_name',
@@ -151,8 +123,6 @@ module.exports = {
 
   putHelp: async (question_id) => {
     try {
-      // const db = await connectDb();
-      // const questionsCollection = db.collection('QuestionAnswerPhoto');
       const data = await questionsCollection.updateOne(
         { question_id: question_id },
         { $inc: { question_helpfulness: 1 } }
