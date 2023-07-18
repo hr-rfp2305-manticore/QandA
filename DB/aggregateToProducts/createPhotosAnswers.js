@@ -4,10 +4,11 @@ const URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
 const DB_NAME = process.env.MONGO_DBNAME || 'qanda';
 
 const createPhotosAnswers = async () => {
+  console.log(`Connecting to ${DB_NAME} at ${URI}`);
   const client = await MongoClient.connect(URI, {
     useUnifiedTopology: true,
   });
-
+  console.log('Connection successful');
   const db = client.db(DB_NAME);
 
   // Define collections
