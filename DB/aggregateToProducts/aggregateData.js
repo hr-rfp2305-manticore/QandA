@@ -7,9 +7,11 @@ const DB_NAME = process.env.MONGO_DBNAME || 'qanda';
 
 const addIndexes = async () => {
   try {
+    console.log(`Connecting to ${DB_NAME} at ${URI}`);
     const client = await MongoClient.connect(URI, {
       useUnifiedTopology: true,
     });
+    console.log('Connection successful');
     const db = client.db(DB_NAME);
     const answerPhotosCollection = db.collection('AnswerAndPhotos');
     const questionsCollection = db.collection('Questions');
