@@ -3,21 +3,21 @@ const { Answers } = require('../models');
 module.exports = {
   get: async (req, res) => {
     const { question_id } = req.params;
-    let { page, count } = req.query;
-    if (!count) {
-      count = 5;
-    }
-    if (!page) {
-      page = 1;
-    }
-    console.log(req.query);
+    let { page, count } = req.body;
+    count = checkInput(count, 5);
+    page = checkInput(page, 1);
+
     try {
       const data = await Answers.getAnswers(
         Number.parseInt(question_id),
-        Number.parseInt(page),
-        Number.parseInt(count)
+        page,
+        count
       );
-      res.send(data);
+      if (data.length === 0) {
+        res.status(404).send(`No question with an id ${question_id} exists`);
+      } else {
+        res.send(data[0]);
+      }
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
@@ -25,13 +25,60 @@ module.exports = {
   },
 
   post: async (req, res) => {
-    const { body, name, email, photo } = req.body;
+    const { body, name, email, photos } = req.body;
     const { question_id } = req.params;
-    console.log(question_id);
-    console.log(body);
-    console.log(name);
-    console.log(email);
-    console.log(photo);
-    res.status(201).send('You are posting an answer!');
+
+    try {
+      const data = await Answers.insertAnswer(
+        question_id,
+        body,
+        name,
+        email,
+        photos
+      );
+      res.status(201).send(data);
+    } catch (err) {
+      console.error(err);
+      res.status(400).send(err);
+    }
   },
+
+  putHelp: async (req, res) => {
+    const { answer_id } = req.params;
+    try {
+      const data = await Answers.putHelp(Number.parseInt(answer_id));
+      res.status(204).send();
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  putReport: async (req, res) => {
+    const { answer_id } = req.params;
+    try {
+      const data = await Answers.putReport(Number.parseInt(answer_id));
+      res.status(204).send();
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  readTest: async (req, res) => {
+    const { answer_id } = req.params;
+    console.log(answer_id);
+    try {
+      await Answers.readTest(Number.parseInt(answer_id));
+      res.status(204).send();
+    } catch (err) {
+      res.status(404).send(err);
+    }
+  },
+};
+
+const checkInput = (parameter, defaultAmount) => {
+  if (!parameter) {
+    return defaultAmount;
+  } else {
+    return Number.parseInt(parameter);
+  }
 };

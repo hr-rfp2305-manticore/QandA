@@ -2,10 +2,16 @@ const express = require('express');
 const router = express.Router();
 const controllers = require('./controllers');
 
-router.get('/questions', controllers.Questions.get);
-router.post('/questions/', controllers.Questions.post);
+router.get('/:product_id', controllers.Questions.get);
+router.post('/', controllers.Questions.post);
+router.put('/:question_id/helpful', controllers.Questions.putHelp);
+router.put('/:question_id/report', controllers.Questions.putReport);
 
-router.get('/questions/:question_id/answers', controllers.Answers.get);
-router.post('/questions/:question_id/answers', controllers.Answers.post);
+router.get('/:question_id/answers', controllers.Answers.get);
+router.post('/:question_id/answers', controllers.Answers.post);
+router.put('/answers/:answer_id/helpful', controllers.Answers.putHelp);
+router.put('/answers/:answer_id/report', controllers.Answers.putReport);
 
+router.get('/test/:question_id', controllers.Questions.readTest);
+router.get('/answers/test/:answer_id', controllers.Answers.readTest);
 module.exports = router;

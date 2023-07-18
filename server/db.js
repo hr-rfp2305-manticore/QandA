@@ -1,8 +1,8 @@
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
 
-const URL = process.env.MONGO_URL || 'mongodb://localhost:27017';
-const DB_NAME = process.env.MONGO_NAME || 'qanda';
+const URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
+const DB_NAME = process.env.MONGO_DBNAME || 'qanda';
 let db;
 
 const connectDb = async () => {
@@ -10,9 +10,10 @@ const connectDb = async () => {
     return db;
   }
 
-  const client = await MongoClient.connect(URL, { useUnifiedTopology: true });
+  const client = await MongoClient.connect(URI, { useUnifiedTopology: true });
   db = client.db(DB_NAME);
+
   return db;
 };
 
-module.exports = connectDb;
+exports.connectDb = connectDb;

@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const router = require('./routes');
 const morgan = require('morgan');
-const connectDb = require('./db');
+const { connectDb } = require('./db');
 
 const app = express();
 // Server variables
@@ -19,7 +19,7 @@ const startServer = async () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    app.use('/qa', router);
+    app.use('/qa/questions', router);
 
     app.listen(PORT, () => {
       console.log(`Connected to ${db.databaseName}, Listening on port ${PORT}`);
