@@ -19,7 +19,7 @@ const createPhotosAnswers = async () => {
   await answersCollection.createIndex({ id: 1 });
   await photosCollection.createIndex({ answer_id: 1 });
 
-  console.time('Step 1/3 Complete'); // Start timer
+  console.time('Step 1/3 Complete');
 
   const cursor = answersCollection.aggregate([
     {
