@@ -62,6 +62,17 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+
+  readTest: async (req, res) => {
+    const { answer_id } = req.params;
+    console.log(answer_id);
+    try {
+      await Answers.readTest(Number.parseInt(answer_id));
+      res.status(204).send();
+    } catch (err) {
+      res.status(404).send(err);
+    }
+  },
 };
 
 const checkInput = (parameter, defaultAmount) => {

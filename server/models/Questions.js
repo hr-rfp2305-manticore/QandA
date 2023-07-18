@@ -178,4 +178,15 @@ module.exports = {
       throw err;
     }
   },
+
+  readTest: async (question_id) => {
+    try {
+      const data = await questionsCollection.findOne({ id: question_id });
+      console.log(data);
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
 };

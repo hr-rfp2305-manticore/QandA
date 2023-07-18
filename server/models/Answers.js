@@ -232,4 +232,15 @@ module.exports = {
       throw err;
     }
   },
+
+  readTest: async (answer_id) => {
+    try {
+      const data = await answersCollection.findOne({ id: answer_id });
+      console.log(data);
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
 };

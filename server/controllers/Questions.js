@@ -3,6 +3,7 @@ const { Questions } = require('../models');
 
 module.exports = {
   get: async (req, res) => {
+    console.log(req.body);
     let { product_id, page, count } = req.body;
     count = checkInput(count, 5);
     page = checkInput(page, 1);
@@ -56,6 +57,22 @@ module.exports = {
       res.status(204).send();
     } catch (err) {
       res.status(400).send(err);
+    }
+  },
+
+  readTest: async (req, res) => {
+    const { question_id } = req.params;
+    try {
+      const data = await Questions.readTest(Number.parseInt(question_id));
+      if (!data) {
+        res
+          .status(404)
+          .send(`There are no questions with an id of ${question_id}`);
+      } else {
+        res.status(200).send(data);
+      }
+    } catch (err) {
+      res.status(404).send(err);
     }
   },
 };
