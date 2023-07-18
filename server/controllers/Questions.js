@@ -3,8 +3,8 @@ const { Questions } = require('../models');
 
 module.exports = {
   get: async (req, res) => {
-    console.log(req.body);
-    let { product_id, page, count } = req.body;
+    let { page, count } = req.query;
+    let { product_id } = req.params;
     count = checkInput(count, 5);
     page = checkInput(page, 1);
 

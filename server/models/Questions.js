@@ -100,7 +100,7 @@ module.exports = {
         },
       ]);
       const data = await cursor.toArray();
-      console.log(data);
+
       return data[0];
     } catch (err) {
       console.error(err);
