@@ -1,11 +1,14 @@
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
+const URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
+const DB_NAME = process.env.MONGO_DBNAME || 'qanda';
 
 const createPhotosAnswers = async () => {
-  const client = await MongoClient.connect('mongodb://localhost:27017', {
+  const client = await MongoClient.connect(URI, {
     useUnifiedTopology: true,
   });
 
-  const db = client.db('qanda');
+  const db = client.db(DB_NAME);
 
   // Define collections
   const answersCollection = db.collection('Answers');
