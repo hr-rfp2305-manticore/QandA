@@ -70,9 +70,21 @@ module.exports = {
             results: '$results',
           },
         },
+        {
+          $project: {
+            _id: 0,
+            'results._id': 0,
+            'results.product_id': 0,
+            'results.asker_email': 0,
+            'results.answers._id': 0,
+            'results.answers.answerer_email': 0,
+            'results.answers.question_id': 0,
+            'results.answers.reported': 0,
+          },
+        },
       ]);
       const data = await cursor.toArray();
-
+      console.log(data);
       return data[0];
     } catch (err) {
       console.error(err);
