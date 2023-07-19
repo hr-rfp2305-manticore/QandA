@@ -20,47 +20,101 @@ module.exports = {
     console.log('MODEL', page, count);
     const skipTo = (page - 1) * count;
     try {
-      const cursor = answersCollection.aggregate([
-        {
-          $match: {
-            question_id: question_id,
-          },
-        },
-        {
-          $skip: skipTo,
-        },
-        {
-          $limit: count,
-        },
-        {
-          $project: {
-            question: question_id,
-            answer_id: '$id',
-            body: '$body',
-            date: '$date_written',
-            answerer_name: '$answerer_name',
-            helpfulness: '$helpful',
-            photos: '$photos',
-          },
-        },
-        {
-          $group: {
-            _id: question_id,
-            results: {
-              $push: '$$ROOT',
+      const cursor = answersCollection.aggregate(
+        [
+          {
+            $match: {
+              question_id: 1,
             },
           },
-        },
-        {
-          $addFields: {
-            page: 1,
-            count: count,
-            question: question_id,
+          {
+            $skip: 0,
           },
-        },
-      ]);
+          {
+            $limit: 10,
+          },
+          {
+            $project: {
+              question: 1,
+              answer_id: '$id',
+              body: '$body',
+              date: '$date_written',
+              answerer_name: '$answerer_name',
+              helpfulness: '$helpful',
+              photos: '$photos',
+            },
+          },
+          {
+            $group: {
+              _id: 'question_id',
+              results: {
+                $push: '$$ROOT',
+              },
+            },
+          },
+          {
+            $addFields: {
+              question: 1,
+              page: 1,
+              count: 1,
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              question: 1,
+              results: 1,
+              page: 1,
+              count: 1,
+            },
+          },
+          {
+            $project: {
+              'results._id': 0,
+            },
+          },
+        ]
+        // [
+        //   {
+        //     $match: {
+        //       question_id: question_id,
+        //     },
+        //   },
+        //   {
+        //     $skip: skipTo,
+        //   },
+        //   {
+        //     $limit: count,
+        //   },
+        //   {
+        //     $project: {
+        //       question: question_id,
+        //       answer_id: '$id',
+        //       body: '$body',
+        //       date: '$date_written',
+        //       answerer_name: '$answerer_name',
+        //       helpfulness: '$helpful',
+        //       photos: '$photos',
+        //     },
+        //   },
+        //   {
+        //     $group: {
+        //       _id: question_id,
+        //       results: {
+        //         $push: '$$ROOT',
+        //       },
+        //     },
+        //   },
+        //   {
+        //     $addFields: {
+        //       page: 1,
+        //       count: count,
+        //       question: question_id,
+        //     },
+        //   },
+        // ]
+      );
       const data = await cursor.toArray();
-      console.log(data[0]);
       return data;
 
       // Slowest
