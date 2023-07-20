@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const router = require('./routes');
 const morgan = require('morgan');
+// const compression = require('compression');
+
 const { connectDb } = require('./db');
 
 const app = express();
@@ -16,6 +18,7 @@ const startServer = async () => {
 
     //middleware
     app.use(morgan('dev'));
+    // app.use(compression());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
