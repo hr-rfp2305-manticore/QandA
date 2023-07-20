@@ -10,14 +10,12 @@ const createConnection = async () => {
   db = await connectDb();
   answersCollection = db.collection('AnswerAndPhotos');
   answersLen = await answersCollection.countDocuments({});
-  console.log(answersLen);
 };
 
 createConnection();
 
 module.exports = {
   getAnswers: async (question_id, page, count) => {
-    console.log('MODEL', page, count);
     const skipTo = (page - 1) * count;
     try {
       const cursor = answersCollection.aggregate(
@@ -232,8 +230,6 @@ module.exports = {
   },
 
   insertAnswer: async (question_id, body, name, email, photos) => {
-    console.log('questionid: ', question_id);
-
     // MAKE SURE TO WRITE ABOUT THIS!!!!! NOW THE DOCUMENTS DONT HAVE TO BE COUNTED.
     // STORE LENGTH GLOBALLY AND ADD TO THE COUNT. NOW THE USER DOES NOT HAVE TO WAIT FOR A RESPONSE
     // MAYBE GET THESE LENGTHS IN THE DB FILE AT LOAD
@@ -265,7 +261,6 @@ module.exports = {
         { id: answer_id },
         { $inc: { helpful: 1 } }
       );
-      console.log(data);
       return data;
     } catch (err) {
       console.error(err);
@@ -279,7 +274,6 @@ module.exports = {
         { id: answer_id },
         { $inc: { reported: 1 } }
       );
-      console.log(data);
       return data;
     } catch (err) {
       console.error(err);
@@ -290,7 +284,6 @@ module.exports = {
   readTest: async (answer_id) => {
     try {
       const data = await answersCollection.findOne({ id: answer_id });
-      console.log(data);
       return data;
     } catch (err) {
       console.error(err);

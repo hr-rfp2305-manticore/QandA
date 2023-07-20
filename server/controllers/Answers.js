@@ -19,7 +19,7 @@ module.exports = {
         res.send(data[0]);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(400).send(err);
     }
   },
@@ -65,7 +65,6 @@ module.exports = {
 
   readTest: async (req, res) => {
     const { answer_id } = req.params;
-    console.log(answer_id);
     try {
       await Answers.readTest(Number.parseInt(answer_id));
       res.status(204).send();

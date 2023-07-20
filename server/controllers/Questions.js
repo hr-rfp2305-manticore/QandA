@@ -14,17 +14,17 @@ module.exports = {
         page,
         count
       );
-      // if (!data) {
-      //   res.status(404).send(`There is no product with an id of ${product_id}`);
-      // } else {
-      //   res.send(data);
-      // }
-      res.send(data);
+      if (!data) {
+        res.status(404).send(`There is no product with an id of ${product_id}`);
+      } else {
+        res.send(data);
+      }
+      // res.send(data);
     } catch (err) {
       console.error(err);
       res.status(400).send(err);
     }
-  },
+  }, //TODO fix this
 
   post: async (req, res) => {
     const { body, name, email, product_id } = req.body;
