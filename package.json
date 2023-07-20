@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/hr-rfp2305-manticore/QandA#readme",
   "dependencies": {
+    "compression": "^1.7.4",
     "csv": "^6.3.1",
     "csv-parser": "^3.0.0",
     "csv-writer": "^1.6.0",
