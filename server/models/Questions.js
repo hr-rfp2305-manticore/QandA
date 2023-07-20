@@ -84,7 +84,6 @@ module.exports = {
         },
       ]);
       const data = await cursor.toArray();
-      console.log(data);
       return data[0];
     } catch (err) {
       console.error(err);
@@ -136,7 +135,7 @@ module.exports = {
   putHelp: async (question_id) => {
     try {
       const data = await questionsCollection.updateOne(
-        { question_id: question_id },
+        { id: question_id },
         { $inc: { question_helpfulness: 1 } }
       );
       return data;
@@ -150,7 +149,7 @@ module.exports = {
     try {
       const data = await questionsCollection.updateOne(
         {
-          question_id: question_id,
+          id: question_id,
         },
         { $inc: { reported: 1 } }
       );
