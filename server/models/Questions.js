@@ -136,7 +136,7 @@ module.exports = {
     try {
       const data = await questionsCollection.updateOne(
         { id: question_id },
-        { $inc: { question_helpfulness: 1 } }
+        { $inc: { helpful: 1 } }
       );
       return data;
     } catch (err) {
