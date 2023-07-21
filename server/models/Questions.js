@@ -84,6 +84,7 @@ module.exports = {
         },
       ]);
       const data = await cursor.toArray();
+      // console.log(data);
       return data[0];
     } catch (err) {
       console.error(err);
@@ -163,7 +164,7 @@ module.exports = {
   readTest: async (question_id) => {
     try {
       const data = await questionsCollection.findOne({ id: question_id });
-      console.log(data);
+      // console.log(data);
       return data;
     } catch (err) {
       console.error(err);
