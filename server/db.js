@@ -1,8 +1,12 @@
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
 
-const URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
+const USERNAME = process.env.MONGO_USERNAME;
+const PASSWORD = process.env.MONGO_PASSWORD;
+const HOST = process.env.MONGO_HOST || 'localhost:27017';
 const DB_NAME = process.env.MONGO_DBNAME || 'qanda';
+const URI = `mongodb://${USERNAME}:${PASSWORD}@${HOST}`;
+
 let db;
 
 const connectDb = async () => {
