@@ -271,7 +271,7 @@ module.exports = {
 
     const insertCheck = () => {
       buffer.push(document);
-      if (buffer.length === 1000) {
+      if (buffer.length >= 500) {
         answersCollection.insertMany(buffer);
         buffer = [];
         return newAnswerId;
@@ -290,7 +290,6 @@ module.exports = {
     // }
     try {
       answersLen++;
-      console.log(buffer);
       insertCheck();
     } catch (err) {
       console.error(err);

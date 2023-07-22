@@ -131,7 +131,7 @@ module.exports = {
 
     const insertCheck = () => {
       buffer.push(document);
-      if (buffer.length >= 50) {
+      if (buffer.length >= 500) {
         questionsCollection.insertMany(buffer, options);
         buffer = [];
         return newQuesId;
