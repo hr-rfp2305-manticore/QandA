@@ -142,7 +142,6 @@ module.exports = {
     try {
       // const result = await questionsCollection.insertOne(document);
       questionsLen++;
-      console.log(buffer);
       insertCheck();
       // return { ...result, question_id: questionsLen };
     } catch (err) {
