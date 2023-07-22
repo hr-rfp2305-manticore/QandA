@@ -36,7 +36,7 @@ module.exports = {
         email,
         photos
       );
-      console.log('DATAAAAAAA', data);
+
       res.status(201).send();
     } catch (err) {
       console.error(err);
