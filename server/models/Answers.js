@@ -3,6 +3,8 @@ let db;
 let answersCollection;
 let answersLen = 0;
 
+let buffer = [];
+
 const createConnection = async () => {
   if (db) {
     return;
@@ -22,7 +24,7 @@ module.exports = {
         [
           {
             $match: {
-              question_id: 1,
+              question_id: question_id,
             },
           },
           {
@@ -230,29 +232,72 @@ module.exports = {
   },
 
   insertAnswer: async (question_id, body, name, email, photos) => {
-    // MAKE SURE TO WRITE ABOUT THIS!!!!! NOW THE DOCUMENTS DONT HAVE TO BE COUNTED.
-    // STORE LENGTH GLOBALLY AND ADD TO THE COUNT. NOW THE USER DOES NOT HAVE TO WAIT FOR A RESPONSE
-    // MAYBE GET THESE LENGTHS IN THE DB FILE AT LOAD
-
+    const newAnswerId = answersLen + 1;
+    console.log(newAnswerId);
     const document = {
       answerer_email: email,
       answerer_name: name,
       body: body,
       date_written: Date.now(),
       helpful: 0,
-      id: answersLen + 1,
+      id: newAnswerId,
       photos: photos,
       question_id: Number.parseInt(question_id),
       reported: 0,
     };
 
-    // await docsCollection.findOne{question_id:}
-    const result = await answersCollection.insertOne(document);
+    const debounce = (fn, delay) => {
+      let id;
+      return (...args) => {
+        if (id) {
+          clearTimeout(id);
+        }
+        id = setTimeout(() => {
+          fn(...args);
+        }, delay);
+      };
+    };
 
-    if (result.acknowledged) {
+    const insertBuffer = () => {
+      // if buffer length is one insertOne
+      if (buffer.length === 1) {
+        answersCollection.insertOne(buffer[0]);
+      } else if (buffer.length > 1) {
+        answersCollection.insertMany(buffer);
+        buffer = [];
+      }
+      return newAnswerId;
+    };
+
+    const insertCheck = () => {
+      buffer.push(document);
+      if (buffer.length === 1000) {
+        answersCollection.insertMany(buffer);
+        buffer = [];
+        return newAnswerId;
+      }
+      debounce(insertBuffer, 50);
+    };
+    // else buffer insert many
+
+    // if buffer length is 1000
+
+    // await docsCollection.findOne{question_id:}
+    // const result = await answersCollection.insertOne(document);
+
+    // if (result.acknowledged) {
+    //   answersLen++;
+    // }
+    try {
       answersLen++;
+      console.log(buffer);
+      insertCheck();
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-    return { ...result, id: answersLen };
+
+    // return { ...result, id: answersLen };
   },
 
   putHelp: async (answer_id) => {
