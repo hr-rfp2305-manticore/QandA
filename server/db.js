@@ -5,8 +5,7 @@ const USERNAME = encodeURIComponent(process.env.USERNAME);
 const PASSWORD = encodeURIComponent(process.env.PASSWORD);
 const HOST = process.env.HOST || 'localhost:27017';
 const DB_NAME = process.env.MONGO_DBNAME || 'qanda';
-// const URI = `mongodb://${USERNAME}:${PASSWORD}@${HOST}/?authMechanism=DEFAULT&authSource=qanda`;
-const URI = 'mongodb://localhost:27017';
+const URI = `mongodb://${USERNAME}:${PASSWORD}@${HOST}/?authMechanism=DEFAULT&authSource=qanda`;
 let db;
 
 const connectDb = async () => {
