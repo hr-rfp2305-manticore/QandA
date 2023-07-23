@@ -3,8 +3,6 @@ let db;
 let answersCollection;
 let answersLen = 0;
 
-let buffer = [];
-
 const createConnection = async () => {
   if (db) {
     return;
@@ -12,19 +10,21 @@ const createConnection = async () => {
   db = await connectDb();
   answersCollection = db.collection('AnswerAndPhotos');
   answersLen = await answersCollection.countDocuments({});
+  console.log(answersLen);
 };
 
 createConnection();
 
 module.exports = {
   getAnswers: async (question_id, page, count) => {
+    console.log('MODEL', page, count);
     const skipTo = (page - 1) * count;
     try {
       const cursor = answersCollection.aggregate(
         [
           {
             $match: {
-              question_id: question_id,
+              question_id: 1,
             },
           },
           {
@@ -232,71 +232,31 @@ module.exports = {
   },
 
   insertAnswer: async (question_id, body, name, email, photos) => {
-    const newAnswerId = answersLen + 1;
-    console.log(newAnswerId);
+    console.log('questionid: ', question_id);
+
+    // MAKE SURE TO WRITE ABOUT THIS!!!!! NOW THE DOCUMENTS DONT HAVE TO BE COUNTED.
+    // STORE LENGTH GLOBALLY AND ADD TO THE COUNT. NOW THE USER DOES NOT HAVE TO WAIT FOR A RESPONSE
+    // MAYBE GET THESE LENGTHS IN THE DB FILE AT LOAD
+
     const document = {
       answerer_email: email,
       answerer_name: name,
       body: body,
       date_written: Date.now(),
       helpful: 0,
-      id: newAnswerId,
+      id: answersLen + 1,
       photos: photos,
       question_id: Number.parseInt(question_id),
       reported: 0,
     };
 
-    const debounce = (fn, delay) => {
-      let id;
-      return (...args) => {
-        if (id) {
-          clearTimeout(id);
-        }
-        id = setTimeout(() => {
-          fn(...args);
-        }, delay);
-      };
-    };
-
-    const insertBuffer = () => {
-      // if buffer length is one insertOne
-      if (buffer.length === 1) {
-        answersCollection.insertOne(buffer[0]);
-      } else if (buffer.length > 1) {
-        answersCollection.insertMany(buffer);
-        buffer = [];
-      }
-      return newAnswerId;
-    };
-
-    const insertCheck = () => {
-      buffer.push(document);
-      if (buffer.length >= 500) {
-        answersCollection.insertMany(buffer);
-        buffer = [];
-        return newAnswerId;
-      }
-      debounce(insertBuffer, 50);
-    };
-    // else buffer insert many
-
-    // if buffer length is 1000
-
     // await docsCollection.findOne{question_id:}
-    // const result = await answersCollection.insertOne(document);
-
-    // if (result.acknowledged) {
-    //   answersLen++;
-    // }
-    try {
+    const result = await answersCollection.insertOne(document);
+    console.log(result);
+    if (result.acknowledged) {
       answersLen++;
-      insertCheck();
-    } catch (err) {
-      console.error(err);
-      throw err;
     }
-
-    // return { ...result, id: answersLen };
+    return { ...result, id: answersLen };
   },
 
   putHelp: async (answer_id) => {
@@ -305,6 +265,7 @@ module.exports = {
         { id: answer_id },
         { $inc: { helpful: 1 } }
       );
+      console.log(data);
       return data;
     } catch (err) {
       console.error(err);
@@ -318,6 +279,7 @@ module.exports = {
         { id: answer_id },
         { $inc: { reported: 1 } }
       );
+      console.log(data);
       return data;
     } catch (err) {
       console.error(err);
@@ -328,6 +290,7 @@ module.exports = {
   readTest: async (answer_id) => {
     try {
       const data = await answersCollection.findOne({ id: answer_id });
+      console.log(data);
       return data;
     } catch (err) {
       console.error(err);

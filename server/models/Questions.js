@@ -1,5 +1,5 @@
 const { connectDb } = require('../db');
-let buffer = [];
+const buffer = [];
 let db;
 let questionsCollection;
 let questionsLen = 0;
@@ -93,57 +93,24 @@ module.exports = {
   },
 
   postQuestion: async (product_id, body, name, email) => {
-    const newQuesId = questionsLen + 1;
-    const options = {};
-
-    const document = {
-      id: newQuesId,
-      product_id: product_id,
-      body: body,
-      asker_email: email,
-      asker_name: name,
-      reported: 0,
-      helpful: 0,
-    };
-
-    const debounce = (fn, delay) => {
-      let id;
-      return (...args) => {
-        if (id) {
-          clearTimeout(id);
-        }
-        id = setTimeout(() => {
-          fn(...args);
-        }, delay);
-      };
-    };
-
-    const insertBuffer = () => {
-      // if buffer length is one insertOne
-      if (buffer.length === 1) {
-        questionsCollection.insertOne(buffer[0]);
-      } else if (buffer.length > 1) {
-        questionsCollection.insertMany(buffer, options);
-        buffer = [];
-      }
-      return newQuesId;
-    };
-
-    const insertCheck = () => {
-      buffer.push(document);
-      if (buffer.length >= 3000) {
-        questionsCollection.insertMany(buffer, options);
-        buffer = [];
-        return newQuesId;
-      }
-      debounce(insertBuffer, 50);
-    };
-
     try {
-      // const result = await questionsCollection.insertOne(document);
-      questionsLen++;
-      insertCheck();
-      // return { ...result, question_id: questionsLen };
+      const document = {
+        id: questionsLen + 1,
+        product_id: product_id,
+        body: body,
+        asker_email: email,
+        asker_name: name,
+        reported: 0,
+        helpful: 0,
+      };
+
+      const result = await questionsCollection.insertOne(document);
+
+      if (result.acknowledged) {
+        questionsLen++;
+      }
+
+      return { ...result, question_id: questionsLen };
     } catch (err) {
       console.error(err);
       throw err;

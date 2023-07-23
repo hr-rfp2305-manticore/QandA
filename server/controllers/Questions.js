@@ -14,12 +14,12 @@ module.exports = {
         page,
         count
       );
-      // if (!data) {
-      //   res.status(404).send(`There is no product with an id of ${product_id}`);
-      // } else {
-      //   res.send(data);
-      // }
-      res.send(data);
+      if (!data) {
+        res.status(404).send(`There is no product with an id of ${product_id}`);
+      } else {
+        res.send(data);
+      }
+      // res.send(data);
     } catch (err) {
       console.error(err);
       res.status(400).send(err);
@@ -35,7 +35,7 @@ module.exports = {
         name,
         email
       );
-      res.status(201).send(data);
+      res.status(201).send();
     } catch (err) {
       console.error(err);
       res.status(400).send(err);
