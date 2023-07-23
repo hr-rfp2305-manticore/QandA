@@ -109,8 +109,8 @@ module.exports = {
       if (result.acknowledged) {
         questionsLen++;
       }
-
-      return { ...result, question_id: questionsLen };
+      console.log(result);
+      return { question_id: questionsLen };
     } catch (err) {
       console.error(err);
       throw err;
