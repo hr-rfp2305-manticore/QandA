@@ -2,9 +2,9 @@
 
 This API is used to interact with the question and answers section of the product page. It allows the user to view, ask, answer, report, and upvote questions on products that are sold by Atellier.
 
-## Endpoints
+# Endpoints
 
-### Questions
+## Questions
 
 **GET** `/qa/questions/:product_id`
 
@@ -36,7 +36,7 @@ Allows a user to vote a question as helpful, incrementing its helpful score.
 
 Allows a user to vote a question as helpful, incrementing its helpful score.
 
-# Answers
+## Answers
 **GET** `qa/questions:/:question_id/answers`
 
 Returns a list of answers related to a question id
