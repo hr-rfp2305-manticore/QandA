@@ -17,7 +17,7 @@ const startServer = async () => {
     const db = await connectDb();
 
     //middleware
-    app.use(morgan('dev'));
+    // app.use(morgan('tiny'));
     // app.use(compression());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
