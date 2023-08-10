@@ -14,7 +14,6 @@ router.post('/:question_id/answers', controllers.Answers.post);
 router.put('/answers/:answer_id/helpful', controllers.Answers.putHelp);
 router.put('/answers/:answer_id/report', controllers.Answers.putReport);
 
-router.get('/test/:question_id', controllers.Questions.readTest);
 router.get('/answers/test/:answer_id', controllers.Answers.readTest);
 
 module.exports = router;

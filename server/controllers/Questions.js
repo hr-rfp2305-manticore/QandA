@@ -9,7 +9,7 @@ module.exports = {
     page = checkInput(page, 1);
 
     try {
-      const data = await Questions.getQuestions(
+      const { status, data } = await Questions.getQuestions(
         Number.parseInt(product_id),
         page,
         count
@@ -19,7 +19,7 @@ module.exports = {
       // } else {
       //   res.send(data);
       // }
-      res.send(data);
+      res.status(status).send(data);
     } catch (err) {
       console.error(err);
       res.status(400).send(err);
@@ -29,13 +29,13 @@ module.exports = {
   post: async (req, res) => {
     const { body, name, email, product_id } = req.body;
     try {
-      const data = await Questions.postQuestion(
+      const { status, data } = await Questions.postQuestion(
         Number.parseInt(product_id),
         body,
         name,
         email
       );
-      res.status(201).send();
+      res.status(status).send(data);
     } catch (err) {
       console.error(err);
       res.status(400).send(err);
@@ -45,35 +45,24 @@ module.exports = {
   putHelp: async (req, res) => {
     const { question_id } = req.params;
     try {
-      const data = await Questions.putHelp(Number.parseInt(question_id));
-      res.status(204).send();
-    } catch (err) {
-      res.status(400).send(err);
-    }
-  },
-  putReport: async (req, res) => {
-    const { question_id } = req.params;
-    try {
-      await Questions.putReport(Number.parseInt(question_id));
-      res.status(204).send();
+      const { status, data } = await Questions.putHelp(
+        Number.parseInt(question_id)
+      );
+      res.status(status).send(data);
     } catch (err) {
       res.status(400).send(err);
     }
   },
 
-  readTest: async (req, res) => {
+  putReport: async (req, res) => {
     const { question_id } = req.params;
     try {
-      const data = await Questions.readTest(Number.parseInt(question_id));
-      if (!data) {
-        res
-          .status(404)
-          .send(`There are no questions with an id of ${question_id}`);
-      } else {
-        res.status(200).send(data);
-      }
+      const { status, data } = await Questions.putReport(
+        Number.parseInt(question_id)
+      );
+      res.status(status).send(data);
     } catch (err) {
-      res.status(404).send(err);
+      res.status(400).send(err);
     }
   },
 };
