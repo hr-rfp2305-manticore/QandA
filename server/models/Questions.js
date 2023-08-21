@@ -1,5 +1,5 @@
 const { connectDb } = require('../db');
-const buffer = [];
+const { productExists, questionExists } = require('./Utilities');
 let db;
 let questionsCollection;
 let questionsLen = 0;
@@ -18,6 +18,14 @@ module.exports = {
   getQuestions: async (product_id, page, count) => {
     const skipTo = (page - 1) * count;
     try {
+      const isValidId = await productExists(product_id);
+      if (!isValidId) {
+        return {
+          status: 403,
+          data: { msg: 'No products with this id exist' },
+        };
+      }
+
       const cursor = questionsCollection.aggregate([
         {
           $match: { product_id: product_id, reported: 0 },
@@ -85,6 +93,7 @@ module.exports = {
       ]);
       const data = await cursor.toArray();
       // console.log(data);
+      return { status: 200, data: data[0] };
       return data[0];
     } catch (err) {
       console.error(err);
@@ -94,6 +103,14 @@ module.exports = {
 
   postQuestion: async (product_id, body, name, email) => {
     try {
+      const isValidId = await productExists(product_id);
+      if (!isValidId) {
+        return {
+          status: 403,
+          data: { msg: 'No products with this id exists' },
+        };
+      }
+
       const document = {
         id: questionsLen + 1,
         product_id: product_id,
@@ -109,37 +126,27 @@ module.exports = {
       if (result.acknowledged) {
         questionsLen++;
       }
-      // console.log(result);
-      return { question_id: questionsLen };
+      return { status: 204, data: { question_id: questionsLen } };
     } catch (err) {
       console.error(err);
       throw err;
     }
   },
-  // Future Buffer set up
-  // postQuestion: async (product_id, body, name, email) => {
-  //   const document = {
-  //     answers: [],
-  //     asker_email: email,
-  //     asker_name: name,
-  //     product_id: product_id,
-  //     question_body: body,
-  //     question_helpfullness: 0,
-  //     question_id: buffer.length,
-  //     reported: false,
-  //   };
-  //   buffer.push(document);
-  //   console.log(buffer);
-  //   return document;
-  // },
 
   putHelp: async (question_id) => {
     try {
+      const isValidId = await questionExists(question_id);
+      if (!isValidId) {
+        return {
+          status: 403,
+          data: { msg: 'No question exists with this id' },
+        };
+      }
       const data = await questionsCollection.updateOne(
         { id: question_id },
         { $inc: { helpful: 1 } }
       );
-      return data;
+      return { status: 204, data: null };
     } catch (err) {
       console.error(err);
       throw err;
@@ -148,13 +155,20 @@ module.exports = {
 
   putReport: async (question_id) => {
     try {
-      const data = await questionsCollection.updateOne(
+      const isValidId = await questionExists(question_id);
+      if (!isValidId) {
+        return {
+          status: 403,
+          data: { msg: 'No question exists with this id' },
+        };
+      }
+      await questionsCollection.updateOne(
         {
           id: question_id,
         },
         { $inc: { reported: 1 } }
       );
-      return data;
+      return { status: 204, data: null };
     } catch (err) {
       console.error(err);
       throw err;
@@ -164,7 +178,6 @@ module.exports = {
   readTest: async (question_id) => {
     try {
       const data = await questionsCollection.findOne({ id: question_id });
-      // console.log(data);
       return data;
     } catch (err) {
       console.error(err);
